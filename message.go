@@ -73,7 +73,7 @@ func (m *Message) Parse() error {
 		m.Body = make([]byte, l)
 
 		if _, err := io.ReadFull(m.r, m.Body); err != nil {
-			Error(ECouldNotReadyBody, err)
+			Logerr.Error(ECouldNotReadyBody, err)
 			return err
 		}
 	}
@@ -97,7 +97,7 @@ func (m *Message) Parse() error {
 				m.Headers[k], err = url.QueryUnescape(v[0])
 
 				if err != nil {
-					Error(ECouldNotDecode, err)
+					Logerr.Error(ECouldNotDecode, err)
 					continue
 				}
 			}
