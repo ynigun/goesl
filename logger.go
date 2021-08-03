@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	log = logging.MustGetLogger("goesl")
+	Logerr = logging.MustGetLogger("goesl")
 
 	// Example format string. Everything except the message has a custom color
 	// which is dependent on the log level. Many fields have a custom output
@@ -43,6 +43,11 @@ var (
 //	log.Warningf(message, args...)
 //}
 
+func init() {
+	backend := logging.NewLogBackend(os.Stderr, "", 0)
+	formatter := logging.NewBackendFormatter(backend, format)
+	logging.SetBackend(formatter)
+}
 func init() {
 	backend := logging.NewLogBackend(os.Stderr, "", 0)
 	formatter := logging.NewBackendFormatter(backend, format)
