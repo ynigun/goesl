@@ -58,7 +58,7 @@ func (c *Client) Authenticate() error {
 		return err
 	}
 
-	Debug("A: %v\n", cmr)
+	Logerr.Debug("A: %v\n", cmr)
 
 	if cmr.Get("Content-Type") != "auth/request" {
 		Logerr.Error(EUnexpectedAuthHeader, cmr.Get("Content-Type"))
@@ -78,7 +78,7 @@ func (c *Client) Authenticate() error {
 	}
 
 	if am.Get("Reply-Text") != "+OK accepted" {
-		Error(EInvalidPassword, c.Passwd)
+		Logerr.Error(EInvalidPassword, c.Passwd)
 		return fmt.Errorf(EInvalidPassword, c.Passwd)
 	}
 
