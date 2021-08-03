@@ -207,6 +207,7 @@ func (c *SocketConnection) Handle() {
 
 			if err != nil {
 				c.err <- err
+continue
 				//done <- true
 				//break
 			}
