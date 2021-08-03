@@ -24,23 +24,23 @@ var (
 )
 
 //func Debug(message string, args ...interface{}) {
-	log.Debugf(message, args...)
+//	log.Debugf(message, args...)
 //}
 
 //func Error(message string, args ...interface{}) {
-	log.Errorf(message, args...)
+//	log.Errorf(message, args...)
 //}
 
 //func Notice(message string, args ...interface{}) {
-	log.Noticef(message, args...)
+//	log.Noticef(message, args...)
 //}
 
 //func Info(message string, args ...interface{}) {
-	log.Infof(message, args...)
+//	log.Infof(message, args...)
 //}
 
 //func Warning(message string, args ...interface{}) {
-	log.Warningf(message, args...)
+//	log.Warningf(message, args...)
 //}
 
 func init() {
