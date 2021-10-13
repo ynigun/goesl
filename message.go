@@ -51,13 +51,13 @@ func (m *Message) Parse() error {
 	cmr, err := m.tr.ReadMIMEHeader()
 
 	if err != nil && err.Error() != "EOF" {
-		Logerr.Error(ECouldNotReadMIMEHeaders, err)
-		return err
+		return fmt.Errorf(ECouldNotReadMIMEHeaders, err)
+	
 	}
 
 	if cmr.Get("Content-Type") == "" {
-		Logerr.Debug("Not accepting message because of empty content type. Just whatever with it ...")
-		return fmt.Errorf("Parse EOF")
+	//	Logerr.Debug("Not accepting message because of empty content type. Just whatever with it ...")
+		return fmt.Errorf("Parse EOF because of empty content type")
 	}
 
 	// Will handle content length by checking if appropriate lenght is here and if it is than
@@ -66,21 +66,19 @@ func (m *Message) Parse() error {
 		l, err := strconv.Atoi(lv)
 
 		if err != nil {
-			Logerr.Error(EInvalidContentLength, err)
-			return err
+			return fmt.Errorf(EInvalidContentLength, err)
 		}
 
 		m.Body = make([]byte, l)
 
 		if _, err := io.ReadFull(m.r, m.Body); err != nil {
-			Logerr.Error(ECouldNotReadyBody, err)
-			return err
+			return fmt.Errorf(ECouldNotReadyBody, err)
 		}
 	}
 
 	msgType := cmr.Get("Content-Type")
 
-	Logerr.Debug("Got message content (type: %s). Searching if we can handle it ...", msgType)
+	fmt.Println("Got message content (type: %s). Searching if we can handle it ...", msgType)
 
 	if !StringInSlice(msgType, AvailableMessageTypes) {
 		return fmt.Errorf(EUnsupportedMessageType, msgType, AvailableMessageTypes)
@@ -97,7 +95,7 @@ func (m *Message) Parse() error {
 				m.Headers[k], err = url.QueryUnescape(v[0])
 
 				if err != nil {
-					Logerr.Error(ECouldNotDecode, err)
+					fmt.Log(ECouldNotDecode, err)
 					continue
 				}
 			}
@@ -107,7 +105,7 @@ func (m *Message) Parse() error {
 	switch msgType {
 	case "text/disconnect-notice":
 		for k, v := range cmr {
-			Logerr.Debug("Message (header: %s) -> (value: %v)", k, v)
+			fmt.Println("Message (header: %s) -> (value: %v)", k, v)
 		}
 	case "command/reply":
 		reply := cmr.Get("Reply-Text")
@@ -136,7 +134,7 @@ func (m *Message) Parse() error {
 				m.Headers[k] = v.(string)
 			default:
 				//delete(m.Headers, k)
-				Logerr.Warning("Removed non-string property (%s)", k)
+				fmt.Println("Removed non-string property (%s)", k)
 			}
 		}
 
@@ -162,15 +160,14 @@ func (m *Message) Parse() error {
 			length, err := strconv.Atoi(vl)
 
 			if err != nil {
-				Logerr.Error(EInvalidContentLength, err)
-				return err
+				return fmt.Errorf(EInvalidContentLength, err)
 			}
 
 			m.Body = make([]byte, length)
 
 			if _, err = io.ReadFull(r, m.Body); err != nil {
-				Logerr.Error(ECouldNotReadyBody, err)
-				return err
+				return fmt.Errorf(ECouldNotReadyBody, err)
+				
 			}
 		}
 	}
