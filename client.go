@@ -58,7 +58,7 @@ func (c *Client) Authenticate() error {
 		return fmt.Errorf(ECouldNotReadMIMEHeaders, err)
 	}
 
-	Logerr.Debug("A: %v\n", cmr)
+//	Logerr.Debug("A: %v\n", cmr)
 
 	if cmr.Get("Content-Type") != "auth/request" {
 		return fmt.Errorf(EUnexpectedAuthHeader, cmr.Get("Content-Type"))
