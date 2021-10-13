@@ -26,27 +26,26 @@ type OutboundServer struct {
 
 // Start - Will start new outbound server
 func (s *OutboundServer) Start() error {
-	Logerr.Notice("Starting Freeswitch Outbound Server @ (address: %s) ...", s.Addr)
+	fmt.Println("Starting Freeswitch Outbound Server @ (address: %s) ...", s.Addr)
 
 	var err error
 
 	s.Listener, err = net.Listen(s.Proto, s.Addr)
 
 	if err != nil {
-		Logerr.Error(ECouldNotStartListener, err)
-		return err
+		return fmt.Errorf(ECouldNotStartListener, err)
 	}
 
 	quit := make(chan bool)
 
 	go func() {
 		for {
-			Logerr.Warning("Waiting for incoming connections ...")
+			fmt.Println("Waiting for incoming connections ...")
 
 			c, err := s.Accept()
 
 			if err != nil {
-				Logerr.Error(EListenerConnection, err)
+				fmt.Println(EListenerConnection, err)
 				quit <- true
 				break
 			}
@@ -57,7 +56,7 @@ func (s *OutboundServer) Start() error {
 				m:    make(chan *Message),
 			}
 
-			Logerr.Notice("Got new connection from: %s", conn.OriginatorAddr())
+			fmt.Println("Got new connection from: %s", conn.OriginatorAddr())
 
 			go conn.Handle()
 
@@ -75,7 +74,7 @@ func (s *OutboundServer) Start() error {
 
 // Stop - Will close server connection once SIGTERM/Interrupt is received
 func (s *OutboundServer) Stop() {
-	Logerr.Warning("Stopping Outbound Server ...")
+	fmt.Println("Stopping Outbound Server ...")
 	s.Close()
 }
 
