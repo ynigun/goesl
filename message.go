@@ -95,7 +95,7 @@ func (m *Message) Parse() error {
 				m.Headers[k], err = url.QueryUnescape(v[0])
 
 				if err != nil {
-					fmt.Log(ECouldNotDecode, err)
+					fmt.Println(ECouldNotDecode, err)
 					continue
 				}
 			}
