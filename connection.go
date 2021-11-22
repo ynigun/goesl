@@ -7,7 +7,7 @@
 package goesl
 
 import (
-//	"bufio"
+	"bufio"
 	"bytes"
 	"fmt"
 	"io"
@@ -201,29 +201,29 @@ func (c *SocketConnection) ReadMessage(ctx context.Context) (*Message, error) {
 // Handle - Will handle new messages and close connection when there are no messages left to process
 func (c *SocketConnection) Handle() {
 
-//	done := make(chan bool)
-//
-//	rbuf := bufio.NewReaderSize(c, ReadBufferSize)
-//
-//	go func() {
-//		for {
-//			msg, err := newMessage(rbuf, true)
-//
-//			if err != nil {
-//				c.err <- err
-////continue
-//				done <- true
-//				break
-//			}
-//
-//			c.m <- msg
-//		}
-//	}()
-//
-//	<-done
-//
-//	// Closing the connection now as there's nothing left to do ...
-//	c.Close()
+	done := make(chan bool)
+
+	rbuf := bufio.NewReaderSize(c, ReadBufferSize)
+
+	go func() {
+		for {
+			msg, err := newMessage(rbuf, true)
+
+			if err != nil {
+				c.err <- err
+//continue
+				done <- true
+				break
+			}
+
+			c.m <- msg
+		}
+	}()
+
+	<-done
+
+	// Closing the connection now as there's nothing left to do ...
+	c.Close()
 }
 
 // Close - Will close down net connection and return error if error happen
