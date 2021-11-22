@@ -7,7 +7,7 @@
 package goesl
 
 import (
-	"bufio"
+//	"bufio"
 	"bytes"
 	"fmt"
 	"io"
