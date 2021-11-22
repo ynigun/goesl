@@ -16,6 +16,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"context"
+
 )
 
 // Main connection against ESL - Gotta add more description here
