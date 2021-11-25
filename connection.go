@@ -23,7 +23,7 @@ import (
 // Main connection against ESL - Gotta add more description here
 type SocketConnection struct {
 	net.Conn
-	err chan error
+	Err chan error
 	m   chan *Message
 	mtx sync.Mutex
 }
@@ -170,7 +170,7 @@ func (c *SocketConnection) SendMsg(msg map[string]string, uuid, data string) (m 
 	c.mtx.Unlock()
 
 	select {
-	case err := <-c.err:
+	case err := <-c.Err:
 		return nil, err
 	case m := <-c.m:
 		return m, nil
@@ -191,7 +191,7 @@ func (c *SocketConnection) ReadMessage(ctx context.Context) (*Message, error) {
 	select {
 	case <-ctx.Done():
         	return nil,ctx.Err()
-	case err := <-c.err:
+	case err := <-c.Err:
 		return nil, err
 	case msg := <-c.m:
 		return msg, nil
@@ -201,7 +201,7 @@ func (c *SocketConnection) ReadMessage(ctx context.Context) (*Message, error) {
 // Handle - Will handle new messages and close connection when there are no messages left to process
 func (c *SocketConnection) Handle() {
 
-	done := make(chan bool)
+	Done := make(chan bool)
 
 	rbuf := bufio.NewReaderSize(c, ReadBufferSize)
 
@@ -210,9 +210,9 @@ func (c *SocketConnection) Handle() {
 			msg, err := newMessage(rbuf, true)
 
 			if err != nil {
-				c.err <- err
+				c.Err <- err
 //continue
-				done <- true
+				Done <- true
 				break
 			}
 
@@ -220,7 +220,7 @@ func (c *SocketConnection) Handle() {
 		}
 	}()
 
-	<-done
+	<-Done
 
 	// Closing the connection now as there's nothing left to do ...
 	c.Close()

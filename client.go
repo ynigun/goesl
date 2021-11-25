@@ -35,7 +35,7 @@ func (c *Client) EstablishConnection() error {
 
 	c.SocketConnection = SocketConnection{
 		Conn: conn,
-		err:  make(chan error),
+		Err:  make(chan error),
 		m:    make(chan *Message),
 	}
 

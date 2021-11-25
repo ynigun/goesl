@@ -107,6 +107,8 @@ func (m *Message) Parse() error {
 		for k, v := range cmr {
 			fmt.Println("Message (header: %s) -> (value: %v)", k, v)
 		}
+			return fmt.Errorf("hangup")
+
 	case "command/reply":
 		reply := cmr.Get("Reply-Text")
 

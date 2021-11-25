@@ -52,7 +52,7 @@ func (s *OutboundServer) Start() error {
 
 			conn := SocketConnection{
 				Conn: c,
-				err:  make(chan error),
+				Err:  make(chan error),
 				m:    make(chan *Message),
 			}
 
