@@ -189,9 +189,9 @@ func (c *SocketConnection) ReadMessage(ctx context.Context) (*Message, error) {
 	//Logerr.Debug("Waiting for connection message to be received ...")
 
 	select {
-	case <-ctx.Done():
-		c.EmptyChan()
-		return nil,ctx.Err()
+//	case <-ctx.Done():
+//		c.EmptyChan()
+//		return nil,ctx.Err()
 	case err := <-c.Err:
 		c.EmptyChan()
 		return nil, err
