@@ -190,40 +190,59 @@ func (c *SocketConnection) ReadMessage(ctx context.Context) (*Message, error) {
 
 	select {
 	case <-ctx.Done():
-        	return nil,ctx.Err()
+		c.EmptyChan()
+		return nil,ctx.Err()
 	case err := <-c.Err:
+		c.EmptyChan()
 		return nil, err
 	case msg := <-c.m:
 		return msg, nil
 	}
 }
-
+func (c *SocketConnection) EmptyChan() {
+ERRS:
+for {
+    select {
+    case <-c.Err:
+    default:
+       break ERRS
+    }
+}
+M:
+for {
+    select {
+    case <-c.m:
+    default:
+       break M
+    }
+}
+}
 // Handle - Will handle new messages and close connection when there are no messages left to process
 func (c *SocketConnection) Handle() {
+	defer c.Close()
 
-	Done := make(chan bool)
+//	Done := make(chan bool)
 
 	rbuf := bufio.NewReaderSize(c, ReadBufferSize)
 
-	go func() {
+//	go func() {
 		for {
 			msg, err := newMessage(rbuf, true)
 
 			if err != nil {
 				c.Err <- err
 //continue
-				Done <- true
+	//			Done <- true
 				break
 			}
 
 			c.m <- msg
 		}
-	}()
+//	}()
 
-	<-Done
+//	<-Done
 
 	// Closing the connection now as there's nothing left to do ...
-	c.Close()
 }
 
 // Close - Will close down net connection and return error if error happen
