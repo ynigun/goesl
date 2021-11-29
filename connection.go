@@ -169,16 +169,17 @@ func (c *SocketConnection) SendMsg(msg map[string]string, uuid, data string) (m 
 		return nil, err
 	}
 	c.mtx.Unlock()
-	if c.Done{
-		return nil,  fmt.Errorf("done")
-	}
+return 
+	//if c.Done{
+	//	return nil,  fmt.Errorf("done")
+//	}
 
-	select {
-	case err := <-c.Err:
-		return nil, err
-	case m := <-c.m:
-		return m, nil
-	}
+//	select {
+//	case err := <-c.Err:
+//		return nil, err
+//	case m := <-c.m:
+//		return m, nil
+//	}
 }
 
 // OriginatorAdd - Will return originator address known as net.RemoteAddr()
@@ -193,9 +194,9 @@ func (c *SocketConnection) ReadMessage(ctx context.Context) (*Message, error) {
 	//Logerr.Debug("Waiting for connection message to be received ...")
 
 	select {
-	case <-ctx.Done():
-		c.EmptyChan()
-		return nil,ctx.Err()
+//	case <-ctx.Done():
+//		c.EmptyChan()
+//		return nil,ctx.Err()
 	case err := <-c.Err:
 		c.EmptyChan()
 		return nil, err
@@ -234,7 +235,7 @@ func (c *SocketConnection) Handle() {
 			msg, err := newMessage(rbuf, true)
 
 			if err != nil {
-				c.Done = true 
+//				c.Done = true 
 				c.Err <- err
 //continuec.d
 	//			Done <- true
