@@ -26,7 +26,7 @@ type SocketConnection struct {
 	Err chan error
 	m   chan *Message
 	mtx sync.Mutex
-done chan bool
+Done  bool
 }
 
 // Dial - Will establish timedout dial against specified address. In this case, it will be freeswitch server
@@ -169,10 +169,11 @@ func (c *SocketConnection) SendMsg(msg map[string]string, uuid, data string) (m 
 		return nil, err
 	}
 	c.mtx.Unlock()
+	if c.Done{
+		return nil,  fmt.Errorf("done")
+	}
 
 	select {
-	case <-c.done:
-		return nil,  fmt.Errorf("done")
 	case err := <-c.Err:
 		return nil, err
 	case m := <-c.m:
@@ -192,9 +193,9 @@ func (c *SocketConnection) ReadMessage(ctx context.Context) (*Message, error) {
 	//Logerr.Debug("Waiting for connection message to be received ...")
 
 	select {
-//	case <-ctx.Done():
-//		c.EmptyChan()
-//		return nil,ctx.Err()
+	case <-ctx.Done():
+		c.EmptyChan()
+		return nil,ctx.Err()
 	case err := <-c.Err:
 		c.EmptyChan()
 		return nil, err
@@ -233,9 +234,9 @@ func (c *SocketConnection) Handle() {
 			msg, err := newMessage(rbuf, true)
 
 			if err != nil {
+				c.Done = true 
 				c.Err <- err
 //continuec.d
-				c.done <- true 
 	//			Done <- true
 				break
 
