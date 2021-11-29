@@ -133,7 +133,7 @@ func (c *SocketConnection) SendMsg(msg map[string]string, uuid, data string) (m 
 
 	if uuid != "" {
 		if strings.Contains(uuid, "\r\n") {
-			return nil, fmt.Errorf(EInvalidCommandProvided, msg)
+			return  nil,fmt.Errorf(EInvalidCommandProvided, msg)
 		}
 
 		b.WriteString(" " + uuid)
@@ -143,7 +143,7 @@ func (c *SocketConnection) SendMsg(msg map[string]string, uuid, data string) (m 
 
 	for k, v := range msg {
 		if strings.Contains(k, "\r\n") {
-			return nil, fmt.Errorf(EInvalidCommandProvided, msg)
+			return  nil,fmt.Errorf(EInvalidCommandProvided, msg)
 		}
 
 		if v != "" {
@@ -169,7 +169,7 @@ func (c *SocketConnection) SendMsg(msg map[string]string, uuid, data string) (m 
 		return nil, err
 	}
 	c.mtx.Unlock()
-return 
+return c.NewReadMessage() 
 	//if c.Done{
 	//	return nil,  fmt.Errorf("done")
 //	}
@@ -188,6 +188,17 @@ func (c *SocketConnection) OriginatorAddr() net.Addr {
 	return c.RemoteAddr()
 }
 
+func (c *SocketConnection) NewReadMessage() (*Message, error) {
+	//Logerr.Debug("Waiting for connection message to be received ...")
+	rbuf := bufio.NewReaderSize(c, ReadBufferSize)
+
+			msg, err := newMessage(rbuf, true)
+if err != nil {
+		return nil, err
+	}	
+		return msg, nil
+	
+}
 // ReadMessage - Will read message from channels and return them back accordingy.
 // If error is received, error will be returned. If not, message will be returned back!
 func (c *SocketConnection) ReadMessage(ctx context.Context) (*Message, error) {
