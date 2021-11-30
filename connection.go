@@ -243,7 +243,13 @@ break
 }
 			if err != nil {
 				c.Done = true 
-				c.Err <- err
+				select {
+				case c.Err <- err:
+					// message sent
+				case <-time.After(time.Second * 2):
+											// message dropped
+			}
+				
 //continuec.d
 	//			Done <- true
 				break
