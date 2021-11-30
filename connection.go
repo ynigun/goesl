@@ -173,12 +173,15 @@ func (c *SocketConnection) SendMsg(msg map[string]string, uuid, data string) (m 
 	if c.Done{
 		return nil,  fmt.Errorf("done")
 	}
-
-	select {
+	
+	select  {
 	case err := <-c.Err:
 		return nil, err
 	case m := <-c.m:
 		return m, nil
+	case <-time.After(time.Second * 2):
+		return nil,  fmt.Errorf("Timeout")
+
 	}
 }
 
@@ -188,17 +191,7 @@ func (c *SocketConnection) OriginatorAddr() net.Addr {
 	return c.RemoteAddr()
 }
 
-func (c *SocketConnection) NewReadMessage() (*Message, error) {
-	//Logerr.Debug("Waiting for connection message to be received ...")
-	rbuf := bufio.NewReaderSize(c, ReadBufferSize)
 
-			msg, err := newMessage(rbuf, true)
-if err != nil {
-		return nil, err
-	}	
-		return msg, nil
-	
-}
 // ReadMessage - Will read message from channels and return them back accordingy.
 // If error is received, error will be returned. If not, message will be returned back!
 func (c *SocketConnection) ReadMessage(ctx context.Context) (*Message, error) {
