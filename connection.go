@@ -245,7 +245,9 @@ func (c *SocketConnection) Handle() {
 //	go func() {
 		for {
 			msg, err := newMessage(rbuf, true)
-
+if c.Done == true{
+break
+}
 			if err != nil {
 				c.Done = true 
 				c.Err <- err
