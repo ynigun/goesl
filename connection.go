@@ -213,7 +213,7 @@ func (c *SocketConnection) ReadMessage(ctx context.Context) (*Message, error) {
 			return nil,fmt.Errorf("Timeout")
 			// message dropped
 	}
-	}
+	
 }
 func (c *SocketConnection) EmptyChan() {
 ERRS:
