@@ -207,6 +207,12 @@ func (c *SocketConnection) ReadMessage(ctx context.Context) (*Message, error) {
 		return nil, err
 	case msg := <-c.m:
 		return msg, nil
+		
+			// message sent
+	case <-time.After(time.Second * 20):
+			return nil,fmt.Errorf("Timeout")
+			// message dropped
+	}
 	}
 }
 func (c *SocketConnection) EmptyChan() {
