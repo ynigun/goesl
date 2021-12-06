@@ -209,7 +209,7 @@ func (c *SocketConnection) ReadMessage(ctx context.Context) (*Message, error) {
 		return msg, nil
 		
 			// message sent
-	case <-time.After(time.Second * 20):
+	case <-time.After(time.Second * 3600):
 			return nil,fmt.Errorf("Timeout")
 			// message dropped
 	}
@@ -252,7 +252,7 @@ break
 				select {
 				case c.Err <- err:
 					// message sent
-				case <-time.After(time.Second * 2):
+				case <-time.After(time.Second * 10):
 											// message dropped
 			}
 				
@@ -264,7 +264,7 @@ break
 			select {
 			case c.m <- msg:
 				// message sent
-			case <-time.After(time.Second * 2):
+			case <-time.After(time.Second * 10):
 										// message dropped
 		}
 			
