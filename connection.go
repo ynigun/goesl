@@ -261,8 +261,13 @@ break
 				break
 
 			}
-
-			c.m <- msg
+			select {
+			case c.m <- msg:
+				// message sent
+			case <-time.After(time.Second * 2):
+										// message dropped
+		}
+			
 		}
 //	}()
 
